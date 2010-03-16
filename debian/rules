@@ -1,0 +1,99 @@
+#!/usr/bin/make -f
+#export DH_VERBOSE=1
+
+##include /usr/share/python/python.mk
+
+INSTALLD=install -m755 -o0 -g0 -d
+INSTALLF=install -m644 -o0 -g0
+INSTALLE=install -m755 -o0 -g0
+
+PYVERS=$(shell pyversions -vr)
+
+TMPDIR=debian/tmp
+
+prefix=$(CURDIR)/debian/tmp/usr
+
+configure: configure-stamp
+configure-stamp:
+	dh_testdir
+	./configure --prefix=/usr --mandir=\$${prefix}/share/man --enable-gtk-doc=no --localstatedir=/var --sysconfdir=/etc --with-perl-installdirs=vendor --with-system-ltdl=/usr --enable-easy-bindings
+	touch configure-stamp
+
+build: configure-stamp build-stamp $(PYVERS:%=build-python%)
+build-stamp:
+	dh_testdir
+	$(MAKE)
+	
+	touch build-stamp
+
+build-python%:
+	cd bindings/python && python$* setup.py build
+	cd bindings/low-level/python && python$* setup.py build
+	touch $@
+
+clean:
+	dh_testdir
+	dh_testroot
+	rm -f build-stamp configure-stamp build-python2.*
+	[ ! -d bindings/low-level/python/build ] || rm -rf bindings/low-level/python/build
+	[ ! -f bindings/perl/Makefile ] || touch bindings/perl/Makefile
+	[ ! -f bindings/perl/Makefile ] || $(MAKE) -C bindings/perl realclean
+	[ ! -f bindings/low-level/perl/Makefile ] || $(MAKE) -C bindings/low-level/perl realclean
+	# work around makefile bug
+	[ ! -f bindings/Makefile ] || make -C bindings perl-makefile
+	[ ! -f Makefile ] || $(MAKE) distclean
+	rm -rf bindings/python/build
+	rm -f config.log
+	dh_clean
+
+install: install-core $(PYVERS:%=install-python%)
+
+install-core: build
+	dh_testdir
+	dh_testroot
+	dh_clean -k
+	dh_installdirs
+
+	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp
+	find $(TMPDIR)/usr/lib/python*/ -name "*.pyc" -delete
+	$(INSTALLD) $(TMPDIR)/etc/prelude/	\
+		$(TMPDIR)/etc/prelude/default/	\
+		$(TMPDIR)/etc/prelude/profile/	\
+#		$(TMPDIR)/var/spool/prelude-sensors
+
+	find debian/tmp -type f -name .packlist | xargs rm -f
+	-find debian/tmp/usr/lib/perl5 -type d -empty | xargs rmdir -p
+
+#	$(INSTALLF) sensors-default.conf $(TMPDIR)/etc/prelude-sensors/
+
+install-python%:
+	cd bindings/python && python$* setup.py install --root $(CURDIR)/debian/python-prelude
+	cd bindings/low-level/python && python$* setup.py install --root $(CURDIR)/debian/python-prelude
+
+binary-indep: build install
+
+binary-arch: build install
+	dh_testdir
+	dh_testroot
+	dh_install
+	dh_installdocs README
+	dh_installchangelogs ChangeLog
+	dh_installman
+	dh_perl
+	#dh_python
+	dh_pycentral -ppython-prelude
+	dh_link
+	dh_strip --dbg-package=libprelude2-dbg
+	dh_compress -X.py
+	dh_fixperms
+	dh_makeshlibs
+	dh_installdeb
+	dh_shlibdeps debian/libprelude2/usr/bin/prelude-admin \
+		debian/libprelude-dev/usr/bin/libprelude-config
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+binary: binary-indep binary-arch
+
+.PHONY: build clean binary-indep binary-arch binary install configure

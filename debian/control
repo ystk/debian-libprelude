@@ -1,0 +1,102 @@
+Source: libprelude
+Priority: extra
+Section: libs
+XS-Python-Version: all
+Maintainer: Mickael Profeta <profeta@debian.org>
+Uploaders:Pierre Chifflier <pollux@debian.org>
+Build-Depends: debhelper (>= 5.0.37.2),
+    libgnutls-dev(>> 1.2.9),
+    python-all-dev, python-central (>= 0.5),
+    libperl-dev,
+    libltdl-dev | libltdl3-dev,
+    pkg-config,
+    gawk,
+    swig
+Standards-Version: 3.8.4
+
+Package: libprelude-dev
+Section: libdevel
+Architecture: any
+Depends: libprelude2 (= ${binary:Version}), libgnutls-dev, libltdl3-dev, ${misc:Depends}
+Description: Security Information Management System [ Development files ]
+ Prelude is a Universal "Security Information Management" (SIM) system.
+ Its goals are performance and modularity. It is divided in two main
+ parts :
+  - the Prelude sensors, responsible for generating alerts, such as
+    snort featuring a signature engine, plugins for
+    protocol analysis, and intrusion detection plugins, and the Prelude
+    log monitoring lackey.
+  - the Prelude report server, collecting data from Prelude sensors,
+    and generating user-readable reports.
+ .
+ This package contains the development files for Prelude components.
+
+Package: libprelude2
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Security Information Management System [ Base library ]
+ Prelude is a Universal "Security Information Management" (SIM) system.
+ Its goals are performance and modularity. It is divided in two main
+ parts :
+  - the Prelude sensors, responsible for generating alerts, such as
+    snort sensor, featuring a signature engine, plugins for
+    protocol analysis, and intrusion detection plugins, and the Prelude
+    log monitoring lackey.
+  - the Prelude report server, collecting data from Prelude sensors,
+    and generating user-readable reports.
+ .
+ This package contains the Prelude shared library.
+
+Package: libprelude2-dbg
+Section: debug
+Architecture: any
+Depends: ${shlibs:Depends}, libprelude2 (= ${binary:Version}), ${perl:Depends}, ${misc:Depends}
+Description: Security Information Management System [ Debug symbols ]
+ Prelude is a Universal "Security Information Management" (SIM) system.
+ Its goals are performance and modularity. It is divided in two main
+ parts :
+  - the Prelude sensors, responsible for generating alerts, such as
+    snort sensor, featuring a signature engine, plugins for
+    protocol analysis, and intrusion detection plugins, and the Prelude
+    log monitoring lackey.
+  - the Prelude report server, collecting data from Prelude sensors,
+    and generating user-readable reports.
+ .
+ This package contains debugging symbols for Prelude shared library.
+
+Package: libprelude-perl
+Section: perl
+Architecture: any
+Depends: ${perl:Depends}, libprelude2 (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
+Description: Security Information Management System [ Base library ]
+ Prelude is a Universal "Security Information Management" (SIM) system.
+ Its goals are performance and modularity. It is divided in two main
+ parts :
+  - the Prelude sensors, responsible for generating alerts, such as
+    snort sensor, featuring a signature engine, plugins for
+    protocol analysis, and intrusion detection plugins, and the Prelude
+    log monitoring lackey.
+  - the Prelude report server, collecting data from Prelude sensors,
+    and generating user-readable reports.
+ .
+ This package contains the perl bindings for Prelude.
+
+Package: python-prelude
+Section: python
+Architecture: any
+XB-Python-Version: ${python:Versions}
+Depends: ${python:Depends}, libprelude2 (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
+Provides: ${python:Provides}
+Description: Security Information Management System [ Base library ]
+ Prelude is a Universal "Security Information Management" (SIM) system.
+ Its goals are performance and modularity. It is divided in two main
+ parts :
+  - the Prelude sensors, responsible for generating alerts, such as
+    snort sensor, featuring a signature engine, plugins for
+    protocol analysis, and intrusion detection plugins, and the Prelude
+    log monitoring lackey.
+  - the Prelude report server, collecting data from Prelude sensors,
+    and generating user-readable reports.
+ .
+ This package contains the Python bindings for Prelude.
