@@ -1,18 +1,19 @@
 Source: libprelude
 Priority: extra
 Section: libs
-XS-Python-Version: all
-Maintainer: Mickael Profeta <profeta@debian.org>
-Uploaders:Pierre Chifflier <pollux@debian.org>
-Build-Depends: debhelper (>= 5.0.37.2),
+X-Python-Version: >= 2.5
+Maintainer:Pierre Chifflier <pollux@debian.org>
+Uploaders: Mickael Profeta <profeta@debian.org>
+Build-Depends: debhelper (>= 7),
     libgnutls-dev(>> 1.2.9),
-    python-all-dev, python-central (>= 0.5),
+    python-all-dev (>> 2.6.6),
     libperl-dev,
-    libltdl-dev | libltdl3-dev,
+    libltdl-dev,
     pkg-config,
     gawk,
-    swig
-Standards-Version: 3.8.4
+    swig,
+    hardening-wrapper
+Standards-Version: 3.9.3
 
 Package: libprelude-dev
 Section: libdevel
@@ -85,7 +86,6 @@ Description: Security Information Management System [ Base library ]
 Package: python-prelude
 Section: python
 Architecture: any
-XB-Python-Version: ${python:Versions}
 Depends: ${python:Depends}, libprelude2 (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
 Provides: ${python:Provides}
 Description: Security Information Management System [ Base library ]

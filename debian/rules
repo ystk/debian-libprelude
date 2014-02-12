@@ -1,11 +1,28 @@
 #!/usr/bin/make -f
 #export DH_VERBOSE=1
 
-##include /usr/share/python/python.mk
+export DEB_BUILD_HARDENING=1
+export DEB_BUILD_HARDENING_FORMAT=0
 
-INSTALLD=install -m755 -o0 -g0 -d
-INSTALLF=install -m644 -o0 -g0
-INSTALLE=install -m755 -o0 -g0
+CFLAGS = -Wall -g
+INSTALL = install
+INSTALL_FILE    = $(INSTALL) -p    -o root -g root  -m  644
+INSTALL_PROGRAM = $(INSTALL) -p    -o root -g root  -m  755
+INSTALL_SCRIPT  = $(INSTALL) -p    -o root -g root  -m  755
+INSTALL_DIR     = $(INSTALL) -p -d -o root -g root  -m  755
+
+ifneq (,$(filter noopt,$(DEB_BUILD_OPTIONS)))
+	CFLAGS += -O0
+	else
+	CFLAGS += -O2
+endif
+ifeq (,$(filter nostrip,$(DEB_BUILD_OPTIONS)))
+	INSTALL_PROGRAM += -s
+endif
+#ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
+#	NUMJOBS = $(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
+#	MAKEFLAGS += -j$(NUMJOBS)
+#endif
 
 PYVERS=$(shell pyversions -vr)
 
@@ -16,17 +33,21 @@ prefix=$(CURDIR)/debian/tmp/usr
 configure: configure-stamp
 configure-stamp:
 	dh_testdir
-	./configure --prefix=/usr --mandir=\$${prefix}/share/man --enable-gtk-doc=no --localstatedir=/var --sysconfdir=/etc --with-perl-installdirs=vendor --with-system-ltdl=/usr --enable-easy-bindings
+	./configure --prefix=/usr --mandir=\$${prefix}/share/man --enable-gtk-doc=no --localstatedir=/var --sysconfdir=/etc --with-perl-installdirs=vendor --enable-easy-bindings
+	# force swig to create files
+	touch bindings/low-level/libprelude.i
+	touch bindings/libpreludecpp.i
 	touch configure-stamp
 
-build: configure-stamp build-stamp $(PYVERS:%=build-python%)
-build-stamp:
+build: build-arch build-indep $(PYVERS:%=build-python%)
+build-arch: build-stamp
+build-indep: build-stamp
+build-stamp: configure-stamp
 	dh_testdir
 	$(MAKE)
-	
 	touch build-stamp
 
-build-python%:
+build-python%: build-stamp
 	cd bindings/python && python$* setup.py build
 	cd bindings/low-level/python && python$* setup.py build
 	touch $@
@@ -41,34 +62,30 @@ clean:
 	[ ! -f bindings/low-level/perl/Makefile ] || $(MAKE) -C bindings/low-level/perl realclean
 	# work around makefile bug
 	[ ! -f bindings/Makefile ] || make -C bindings perl-makefile
-	[ ! -f Makefile ] || $(MAKE) distclean
+	# force -j1, the distclean target fails in parallel mode
+	[ ! -f Makefile ] || $(MAKE) -j1 distclean
 	rm -rf bindings/python/build
 	rm -f config.log
 	dh_clean
 
 install: install-core $(PYVERS:%=install-python%)
+	find debian/tmp -type f -name .packlist | xargs rm -f
+	find debian/tmp/usr/lib -name "*.la" -exec \
+		sed -i -e "s,^dependency_libs=.*,dependency_libs=''," {} +
 
 install-core: build
 	dh_testdir
 	dh_testroot
-	dh_clean -k
+	dh_prep
 	dh_installdirs
-
 	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp
-	find $(TMPDIR)/usr/lib/python*/ -name "*.pyc" -delete
-	$(INSTALLD) $(TMPDIR)/etc/prelude/	\
+	$(INSTALL_DIR) $(TMPDIR)/etc/prelude/	\
 		$(TMPDIR)/etc/prelude/default/	\
-		$(TMPDIR)/etc/prelude/profile/	\
-#		$(TMPDIR)/var/spool/prelude-sensors
+		$(TMPDIR)/etc/prelude/profile/
 
-	find debian/tmp -type f -name .packlist | xargs rm -f
-	-find debian/tmp/usr/lib/perl5 -type d -empty | xargs rmdir -p
-
-#	$(INSTALLF) sensors-default.conf $(TMPDIR)/etc/prelude-sensors/
-
-install-python%:
-	cd bindings/python && python$* setup.py install --root $(CURDIR)/debian/python-prelude
-	cd bindings/low-level/python && python$* setup.py install --root $(CURDIR)/debian/python-prelude
+install-python%: build-stamp
+	cd bindings/python && python$* setup.py install --install-layout=deb --root $(CURDIR)/debian/python-prelude
+	cd bindings/low-level/python && python$* setup.py install --install-layout=deb --root $(CURDIR)/debian/python-prelude
 
 binary-indep: build install
 
@@ -81,7 +98,7 @@ binary-arch: build install
 	dh_installman
 	dh_perl
 	#dh_python
-	dh_pycentral -ppython-prelude
+	dh_python2 -ppython-prelude
 	dh_link
 	dh_strip --dbg-package=libprelude2-dbg
 	dh_compress -X.py

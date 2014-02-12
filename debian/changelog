@@ -1,3 +1,69 @@
+libprelude (1.0.0-9) unstable; urgency=low
+
+  * Looks like the swig code was not really fixed - disabling
+    DEB_BUILD_HARDENING_FORMAT again
+
+ -- Pierre Chifflier <pollux@debian.org>  Sat, 25 Feb 2012 17:11:57 +0100
+
+libprelude (1.0.0-8) unstable; urgency=low
+
+  * Bump DH version to 7
+  * Re-enable DEB_BUILD_HARDENING_FORMAT, swig seems fixed now
+  * Bump Standards Version to 3.9.3
+
+ -- Pierre Chifflier <pollux@debian.org>  Sat, 25 Feb 2012 14:55:39 +0100
+
+libprelude (1.0.0-7) unstable; urgency=low
+
+  * Disable parallel build, it still cause problems.
+
+ -- Pierre Chifflier <pollux@debian.org>  Sat, 23 Jul 2011 18:18:41 +0200
+
+libprelude (1.0.0-6) unstable; urgency=low
+
+  * Fix install target in parallel mode (Closes: #635103)
+
+ -- Pierre Chifflier <pollux@debian.org>  Fri, 22 Jul 2011 22:06:52 +0200
+
+libprelude (1.0.0-5) unstable; urgency=low
+
+  * Set DEB_BUILD_HARDENING_FORMAT=0 until the swig code is fixed
+    (Closes: #635024)
+
+ -- Pierre Chifflier <pollux@debian.org>  Fri, 22 Jul 2011 08:35:40 +0200
+
+libprelude (1.0.0-4) unstable; urgency=low
+
+  * Fix FTBFS: find: `debian/tmp/usr/lib/python*/': No such file or directory
+    (Closes: #634555)
+  * Bump Standards Version to 3.9.2
+  * Remove deprecated binary prelude-adduser (replaced by prelude-admin)
+  * Add targets build-arch build-indep in debian/rules (fix lintian warning)
+  * Convert to source format 3.0 (quilt), convert all direct modification to
+    patches
+  * Enable hardening wrapper
+  * Enable parallel build (using DEB_BUILD_OPTIONS)
+
+ -- Pierre Chifflier <pollux@debian.org>  Wed, 20 Jul 2011 23:30:05 +0200
+
+libprelude (1.0.0-3) unstable; urgency=low
+
+  * Fix FTBFS with undefined type ptrdiff_t (Closes: #624787)
+  * Bump Standards Version to 3.9.2
+
+ -- Pierre Chifflier <pollux@debian.org>  Mon, 02 May 2011 10:09:55 +0200
+
+libprelude (1.0.0-2) unstable; urgency=low
+
+  * Empty dependency_libs in libtool la file (Closes: #610149)
+    http://wiki.debian.org/ReleaseGoals/LAFileRemoval
+    Thanks to Andreas Metzler
+  * Bump Standards Version to 3.9.1
+  * Switch to dh_python2 (Closes: #616868)
+  * Fix FTBFS with libtool 2.4 (Closes: #620715)
+
+ -- Pierre Chifflier <pollux@debian.org>  Sun, 03 Apr 2011 22:27:11 +0200
+
 libprelude (1.0.0-1) unstable; urgency=low
 
   * Imported Upstream version 1.0.0
