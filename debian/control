@@ -4,7 +4,9 @@ Section: libs
 X-Python-Version: >= 2.5
 Maintainer:Pierre Chifflier <pollux@debian.org>
 Uploaders: Mickael Profeta <profeta@debian.org>
-Build-Depends: debhelper (>= 7),
+Build-Depends: debhelper (>= 9),
+    dh-autoreconf,
+    quilt,
     libgnutls-dev(>> 1.2.9),
     python-all-dev (>> 2.6.6),
     libperl-dev,
@@ -35,6 +37,7 @@ Description: Security Information Management System [ Development files ]
 Package: libprelude2
 Section: libs
 Architecture: any
+Pre-Depends: multiarch-support
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Security Information Management System [ Base library ]
  Prelude is a Universal "Security Information Management" (SIM) system.

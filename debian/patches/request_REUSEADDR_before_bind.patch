@@ -1,0 +1,48 @@
+Index: libprelude-1.0.0/libmissing/tests/test-poll.c
+===================================================================
+--- libprelude-1.0.0.orig/libmissing/tests/test-poll.c	2010-02-24 13:52:50.000000000 +0100
++++ libprelude-1.0.0/libmissing/tests/test-poll.c	2014-05-09 11:31:04.000000000 +0200
+@@ -98,15 +98,16 @@
+   ia.sin_family = AF_INET;
+   inet_pton (AF_INET, "127.0.0.1", &ia.sin_addr);
+   ia.sin_port = htons (TEST_PORT);
++
++  x = 1;
++  setsockopt (s, SOL_SOCKET, SO_REUSEPORT, &x, sizeof (x));
++
+   if (bind (s, (struct sockaddr *) &ia, sizeof (ia)) < 0)
+     {
+       perror ("bind");
+       exit (77);
+     }
+ 
+-  x = 1;
+-  setsockopt (s, SOL_SOCKET, SO_REUSEPORT, &x, sizeof (x));
+-
+   if (listen (s, 1) < 0)
+     {
+       perror ("listen");
+Index: libprelude-1.0.0/libmissing/tests/test-select.c
+===================================================================
+--- libprelude-1.0.0.orig/libmissing/tests/test-select.c	2014-05-09 11:30:52.000000000 +0200
++++ libprelude-1.0.0/libmissing/tests/test-select.c	2014-05-09 11:31:04.000000000 +0200
+@@ -113,15 +113,16 @@
+   ia.sin_family = AF_INET;
+   inet_pton (AF_INET, "127.0.0.1", &ia.sin_addr);
+   ia.sin_port = htons (TEST_PORT);
++
++  x = 1;
++  setsockopt (s, SOL_SOCKET, SO_REUSEPORT, &x, sizeof (x));
++
+   if (bind (s, (struct sockaddr *) &ia, sizeof (ia)) < 0)
+     {
+       perror ("bind");
+       exit (77);
+     }
+ 
+-  x = 1;
+-  setsockopt (s, SOL_SOCKET, SO_REUSEPORT, &x, sizeof (x));
+-
+   if (listen (s, 1) < 0)
+     {
+       perror ("listen");

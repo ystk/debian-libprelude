@@ -1,1 +1,4 @@
-debian/tmp/usr/lib/perl*
+#!/usr/bin/perl
+use warnings;
+use Config;
+print $Config{vendorarch}, "\n";

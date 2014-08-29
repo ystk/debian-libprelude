@@ -1,0 +1,40 @@
+Description: Correctly link against -lpthread as needed to statically link pthreads_atfork symbol.
+ Explicitly specify linker flags to keep pthread_atfork symbol
+Bug-Ubuntu: https://launchpad.net/bugs/1262430
+Reference: https://lists.gnu.org/archive/html/bug-gnulib/2013-10/msg00017.html
+Reference: http://ryanarn.blogspot.co.uk/2011/07/curious-case-of-pthreadatfork-on.html
+Author: Dimitri John Ledkov <xnox@ubuntu.com>
+
+--- a/prelude-admin/Makefile.am
++++ b/prelude-admin/Makefile.am
+@@ -9,7 +9,7 @@
+ 			@PRELUDE_ADMIN_LIBS@ \
+ 			@LIBGCRYPT_LIBS@ \
+ 			@LIBGNUTLS_LIBS@ \
+-			../libmissing/libmissing.la $(GETADDRINFO_LIB) $(HOSTENT_LIB) $(LTLIBINTL) $(LTLIBTHREAD) $(SERVENT_LIB)
++			../libmissing/libmissing.la $(GETADDRINFO_LIB) $(HOSTENT_LIB) $(LTLIBINTL) $(LTLIBMULTITHREAD) $(SERVENT_LIB)
+ 
+ 
+ prelude_admin_SOURCES = 		\
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -9,7 +9,7 @@
+ 
+ libpreludeincludedir = $(includedir)/
+ libprelude_la_LIBADD = @LIBPRELUDE_LIBS@ $(LIBLTDL) $(top_builddir)/libmissing/libmissing.la libprelude-error/libprelude-error.la
+-libprelude_la_LDFLAGS = $(GETADDRINFO_LIB) $(GETHOSTNAME_LIB) $(HOSTENT_LIB) $(INET_NTOP_LIB) $(INET_PTON_LIB) $(LIBSOCKET) $(LTLIBINTL) $(LTLIBTHREAD) $(SERVENT_LIB) -no-undefined -version-info @LIBPRELUDE_SONAME@ -export-symbols-regex "^(idmef|_?prelude)_"
++libprelude_la_LDFLAGS = $(GETADDRINFO_LIB) $(GETHOSTNAME_LIB) $(HOSTENT_LIB) $(INET_NTOP_LIB) $(INET_PTON_LIB) $(LIBSOCKET) $(LTLIBINTL) $(LTLIBMULTITHREAD) $(SERVENT_LIB) -no-undefined -version-info @LIBPRELUDE_SONAME@ -export-symbols-regex "^(idmef|_?prelude)_" -Wl,-u,pthread_atfork
+ lib_LTLIBRARIES = libprelude.la
+ BUILT_SOURCES = $(LTDLDEPS) 
+ 
+--- a/src/libprelude-error/Makefile.am
++++ b/src/libprelude-error/Makefile.am
+@@ -14,7 +14,7 @@
+ nodist_include_HEADERS = prelude-error.h
+ 
+ noinst_LTLIBRARIES = libprelude-error.la
+-libprelude_error_la_LIBADD  = @LTLIBTHREAD@
++libprelude_error_la_LIBADD  = $(LTLIBMULTITHREAD)
+ libprelude_error_la_LDFLAGS = -no-undefined
+ libprelude_error_la_SOURCES = prelude-error.h prelude-error.c strsource.c strerror.c
+ 

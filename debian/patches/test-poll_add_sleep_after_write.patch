@@ -1,0 +1,20 @@
+Index: libprelude-1.0.0/libmissing/tests/test-poll.c
+===================================================================
+--- libprelude-1.0.0.orig/libmissing/tests/test-poll.c	2014-05-09 16:44:55.000000000 +0200
++++ libprelude-1.0.0/libmissing/tests/test-poll.c	2014-05-09 16:46:14.000000000 +0200
+@@ -281,6 +281,7 @@
+         failed ("cannot read data left in the socket by closed process");
+       read (c, buf, 3);
+       write (c, "foo", 3);
++      sleep(1); /* :XXX: race condition in test */
+       if ((poll1_wait (c, POLLIN | POLLOUT) & (POLLHUP | POLLERR)) == 0)
+         failed ("expecting POLLHUP after shutdown");
+       close (c);
+@@ -333,6 +334,7 @@
+   test_pair (c1, c2);
+   close (c1);
+   write (c2, "foo", 3);
++  sleep(1); /* :XXX: race condition in test */
+   if ((poll1_nowait (c2, POLLIN | POLLOUT) & (POLLHUP | POLLERR)) == 0)
+     failed ("expecting POLLHUP after shutdown");
+ 
