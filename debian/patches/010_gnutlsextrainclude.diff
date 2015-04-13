@@ -1,0 +1,40 @@
+diff -NurBbp libprelude-1.0.0-bak/configure.in libprelude-1.0.0/configure.in
+--- libprelude-1.0.0-bak/configure.in	2010-03-10 13:20:02.000000000 +0100
++++ libprelude-1.0.0/configure.in	2014-08-12 19:28:06.163918564 +0200
+@@ -207,6 +207,8 @@ if test x$srp_available = xno; then
+                 AC_DEFINE_UNQUOTED(GNUTLS_SRP_ENABLED, , Define whether SRP support is enabled)
+                 PRELUDE_ADMIN_CFLAGS="-DNEED_GNUTLS_EXTRA $LIBGNUTLS_EXTRA_CFLAGS"
+                 PRELUDE_ADMIN_LIBS="$LIBGNUTLS_EXTRA_LIBS"
++                AC_DEFINE([NEED_GNUTLS_EXTRA_INCLUDE], [1], 
++			  [Define whether we need to include gnutls/extra.h for srp])
+         fi
+ 
+        LIBS=$old_LIBS
+diff -NurBbp libprelude-1.0.0-bak/prelude-admin/prelude-admin.c libprelude-1.0.0/prelude-admin/prelude-admin.c
+--- libprelude-1.0.0-bak/prelude-admin/prelude-admin.c	2010-01-29 12:01:15.000000000 +0100
++++ libprelude-1.0.0/prelude-admin/prelude-admin.c	2014-08-12 19:26:37.419920859 +0200
+@@ -57,7 +57,9 @@
+ #include <errno.h>
+ #include <gnutls/gnutls.h>
+ #include <gnutls/x509.h>
+-#include <gnutls/extra.h>
++#if NEED_GNUTLS_EXTRA_INCLUDE
++# include <gnutls/extra.h>
++#endif
+ 
+ #include "common.h"
+ #include "config-engine.h"
+diff -NurBbp libprelude-1.0.0-bak/prelude-admin/server.c libprelude-1.0.0/prelude-admin/server.c
+--- libprelude-1.0.0-bak/prelude-admin/server.c	2010-01-29 12:01:15.000000000 +0100
++++ libprelude-1.0.0/prelude-admin/server.c	2014-08-12 19:26:37.419920859 +0200
+@@ -39,7 +39,9 @@
+ 
+ #include <gcrypt.h>
+ #include <gnutls/gnutls.h>
+-#include <gnutls/extra.h>
++#if NEED_GNUTLS_EXTRA_INCLUDE
++# include <gnutls/extra.h>
++#endif
+ 
+ #include "prelude-client.h"
+ #include "prelude-error.h"

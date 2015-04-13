@@ -7,7 +7,8 @@ Uploaders: Mickael Profeta <profeta@debian.org>
 Build-Depends: debhelper (>= 9),
     dh-autoreconf,
     quilt,
-    libgnutls-dev(>> 1.2.9),
+    libgnutls28-dev,
+    libgcrypt20-dev,
     python-all-dev (>> 2.6.6),
     libperl-dev,
     libltdl-dev,
@@ -20,7 +21,8 @@ Standards-Version: 3.9.3
 Package: libprelude-dev
 Section: libdevel
 Architecture: any
-Depends: libprelude2 (= ${binary:Version}), libgnutls-dev, libltdl3-dev, ${misc:Depends}
+Depends: libprelude2 (= ${binary:Version}), libgnutls28-dev, libgcrypt20-dev,
+ libltdl3-dev, ${misc:Depends}
 Description: Security Information Management System [ Development files ]
  Prelude is a Universal "Security Information Management" (SIM) system.
  Its goals are performance and modularity. It is divided in two main

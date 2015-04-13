@@ -1,3 +1,19 @@
+libprelude (1.0.0-11.4) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * 010_gnutlsextrainclude.diff: Do not try to #include <gnutls/extra.h> if it
+    is not necessary, i.e. when gnutls is new enough (>= 1.2) to ship SRP in
+    the main library instead of gnutls-extra.
+  * Build and depend on libgnutls28-dev instead of libgnutls-dev.
+    Closes: #754771
+  * Add a (build-)dependency on libgcrypt20-dev.
+    Closes: #745951
+  * 016_ppc64el-isnan-tests-fix-for-little-endian-PowerPC.patch from gnulib
+    upstream to fix test-isnanl-nolibm failure on ppc64el. (Thanks,
+    Mauricio Faria de Oliveira) - This should fix #751822.
+
+ -- Andreas Metzler <ametzler@debian.org>  Fri, 15 Aug 2014 07:28:43 +0200
+
 libprelude (1.0.0-11.3) unstable; urgency=low
 
   * Non-maintainer upload.

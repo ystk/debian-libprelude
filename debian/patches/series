@@ -5,3 +5,5 @@
 request_REUSEADDR_before_bind.patch
 test-poll_add_sleep_after_write.patch
 keep-atfork-symbol.patch
+010_gnutlsextrainclude.diff
+016_ppc64el-isnan-tests-fix-for-little-endian-PowerPC.patch
